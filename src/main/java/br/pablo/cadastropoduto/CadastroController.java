@@ -3,6 +3,7 @@ package br.pablo.cadastropoduto;
 import br.pablo.cadastropoduto.models.Produto;
 import br.pablo.cadastropoduto.repositories.ProdutoRepository;
 import br.pablo.cadastropoduto.repositories.ProdutoRepositorySQLite;
+import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
@@ -11,7 +12,9 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import javafx.stage.Window;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -21,7 +24,7 @@ public class CadastroController implements Initializable {
     public Button btnSalvar = new Button();
 
     @FXML
-    public Label lblNome = new Label("Cadastro");
+    public Text lblNome = new Text("Cadastro");
 
     Alert alert = new Alert(Alert.AlertType.ERROR);
 
@@ -46,15 +49,19 @@ public class CadastroController implements Initializable {
             }
         });
        fillFields();
-
+       setDispose();
     }
 
-    public void shutdown(){
-        produto=new Produto();
+    private void setDispose(){
+        Platform.runLater(()->{
+            Stage currStage = (Stage) btnSalvar.getScene().getWindow();
+            currStage.setOnCloseRequest(e -> {
+               produto = new Produto();
+            });
+        });
     }
 
     private void fillFields(){
-
         if(produto.getId()==null){
             lblNome.setText("Cadastro de produto");
             return;
